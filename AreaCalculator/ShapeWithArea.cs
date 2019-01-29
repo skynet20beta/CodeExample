@@ -1,11 +1,13 @@
-﻿namespace AreaCalculator
+﻿using System;
+
+namespace AreaCalculator
 {
     /// <summary>
     /// Main interface for the shapes with areas
     /// </summary>
     public interface IShapeWithArea
     {
-        double GetArea();
+        double Area { get; }
     }
 
     /// <summary>
@@ -14,26 +16,18 @@
     public abstract class BaseShapeWithArea : IShapeWithArea
     {
         /// <summary>
-        /// In case the shape is invalid error message should explain why it is invalid
+        /// Invalid shape should not be constructed. If shape is invalid according to provided validator it throws InvalidShapeException
         /// </summary>
-        /// <param name="errorMessage">error message</param>
-        /// <returns>true if shape is valid, false otherwise</returns>
-        protected abstract bool IsValid(ref string errorMessage);
-
-        /// <summary>
-        /// Calculates area of valid shapes
-        /// </summary>
-        /// <returns>Area of shape</returns>
-        protected abstract double CalculateArea();
+        /// <param name="validator">func which determines shape validness</param>
+        protected BaseShapeWithArea(Func<ValidationInfo> validator)
+        {
+            var shapeValidnessInfo = validator();
+            if (!shapeValidnessInfo.IsValid) throw new InvalidShapeException(shapeValidnessInfo.ErrorMessage);
+        }
 
         /// <summary>
         /// IShapeWithArea implementation
         /// </summary>
-        public double GetArea()
-        {
-            string errorMessage = null;
-            if (!IsValid(ref errorMessage)) throw new InvalidShapeException(errorMessage);
-            return CalculateArea();
-        }
+        public abstract double Area { get; }
     }
 }

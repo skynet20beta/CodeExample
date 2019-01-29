@@ -6,21 +6,22 @@ namespace AreaCalculator
     {
         private readonly double _radius;
 
-        public Circle(double radius)
+        /// <summary>
+        /// Creates circle with given radius
+        /// </summary>
+        /// <param name="radius">radius</param>
+        public Circle(double radius) : base(() => CheckRadius(radius))
         {
             _radius = radius;
         }
 
-        protected override bool IsValid(ref string errorMessage)
+        private static ValidationInfo CheckRadius(double radius)
         {
-            if (_radius > 0) return true;
-            errorMessage = ErrorHelper.ArgumentShouldBePositive("Circle radius", _radius);
-            return false;
+            return radius > 0
+                ? new ValidationInfo {IsValid = true}
+                : new ValidationInfo {ErrorMessage = ErrorHelper.ArgumentShouldBePositive("Circle radius", radius)};
         }
 
-        protected override double CalculateArea()
-        {
-            return Math.PI * _radius * _radius;
-        }
+        public override double Area => Math.PI * _radius * _radius;
     }
 }

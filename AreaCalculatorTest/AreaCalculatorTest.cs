@@ -7,31 +7,24 @@ namespace AreaCalculatorTest
     [TestFixture]
     public class AreaCalculatorTest
     {
-        private static void AssertShapeIsInvalid(IShapeWithArea shape)
-        {
-            Assert.Throws(typeof(InvalidShapeException), () => shape.GetArea());
-        }
+        private const double DELTA = 1e-6;
 
         [Test]
-        //circle with negative radius
-        public void InvalidCircle()
+        public void CircleWithNegativeRadius()
         {
-            var shape = new Circle(-1.5);
-            AssertShapeIsInvalid(shape);
+            Assert.Throws(typeof(InvalidShapeException), () => new Circle(-1.5));
         }
 
         [Test]
         public void TriangleWithNegativeSide()
         {
-            var shape = new Triangle(-1.5, 2.0, 3.0);
-            AssertShapeIsInvalid(shape);
+            Assert.Throws(typeof(InvalidShapeException), () => new Triangle(-1.5, 2.0, 3.0));
         }
 
         [Test]
         public void TriangleWithInequalityViolated()
         {
-            var shape = new Triangle(1.5, 2.0, 13.0);
-            AssertShapeIsInvalid(shape);
+            Assert.Throws(typeof(InvalidShapeException), () => new Triangle(1.5, 2.0, 13.0));
         }
 
         [Test]
@@ -39,7 +32,7 @@ namespace AreaCalculatorTest
         {
             var shape = new Circle(3);
             var expectedArea = Math.PI * 3 * 3;
-            Assert.AreEqual(shape.GetArea(), expectedArea);
+            Assert.AreEqual(shape.Area, expectedArea, DELTA);
         }
 
         [Test]
@@ -47,7 +40,7 @@ namespace AreaCalculatorTest
         public void TriangleIsOk()
         {
             var shape = new Triangle(3, 4, 5);
-            Assert.AreEqual(shape.GetArea(), 6.0);
+            Assert.AreEqual(shape.Area, 6.0, DELTA);
         }
     }
 }
